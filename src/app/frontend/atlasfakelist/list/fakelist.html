@@ -1,0 +1,65 @@
+  <!-- resource card list . attribute is some information should inject  -->
+<kd-resource-card-list selectable="false"
+                         with-statuses="true"
+                         list="$ctrl.atlasFakeList"
+                         list-resource="$ctrl.atlasFakeListResource">
+
+
+  <!-- resource list header with title -->
+  <kd-resource-card-list-header>
+    <kd-resource-card-list-title>
+      [[Atlaslistexample|Label which appears above the list of such objects.]]
+    </kd-resource-card-list-title>
+  </kd-resource-card-list-header>
+
+  <!-- display some message when cluster don't have that resource -->
+  <kd-zero-state ng-if="!$ctrl.atlasFakeList.listMeta.totalItems">
+    <kd-zero-state-text ng-transclude="zerostate">
+      [[It is possible that all message have expired.|User help on the events page when no events are to be displayed.]]
+      {{::$ctrl.fakeList.listMeta.totalItems}}
+    </kd-zero-state-text>
+  </kd-zero-state>
+
+  <!-- resource header columns .todo: add ng-show if logic-->
+  <kd-resource-card-header-columns ng-show="true">
+    <!-- define by yourself according to your real requirements -->
+    <kd-resource-card-header-column size="medium"
+                                    grow="4">
+      [[Name|Label 'Name' for the fake name column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Nums|Label 'Nums' for the fake nums column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column size="medium"
+                                    grow="4">
+      [[NestObjectList|Label 'NestObjectList' for the fake NestObjectList.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column size="medium"
+                                    grow="4">
+      [[Map|Label 'Map' for the fake mapValue column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Bool|Label 'Bool' for boolean column.]]
+    </kd-resource-card-header-column>
+
+
+  </kd-resource-card-header-columns>
+
+  <!-- resource card info . paginate pagination-id total-items exampleInfo-->
+  <kd-atlas-fake-card dir-paginate="spec in $ctrl.atlasFakeList.exampleSpecs | itemsPerPage: default"
+                      spec="spec"
+                      total-items="::$ctrl.atlasFakeList.listMeta.totalItems">
+
+  </kd-atlas-fake-card>
+
+
+  <!-- footer pagination info -->
+  <kd-resource-card-list-footer>
+    <kd-resource-card-list-pagination></kd-resource-card-list-pagination>
+  </kd-resource-card-list-footer>
+
+</kd-resource-card-list>

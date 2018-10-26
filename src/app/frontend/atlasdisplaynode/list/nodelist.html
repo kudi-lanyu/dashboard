@@ -1,0 +1,66 @@
+  <!-- resource card list . attribute is some information should inject  -->
+<kd-resource-card-list selectable="false"
+                         with-statuses="true"
+                         list="$ctrl.atlasNodeList"
+                         list-resource="$ctrl.atlasNodeListResource">
+
+
+  <!-- resource list header with title -->
+  <kd-resource-card-list-header>
+    <kd-resource-card-list-title>
+      [[Atlasdisplaynode|Label which appears above the list of such objects.]]
+    </kd-resource-card-list-title>
+  </kd-resource-card-list-header>
+
+  <!-- display some message when cluster don't have that resource -->
+  <kd-zero-state ng-if="!$ctrl.atlasNodeList.listMeta.totalItems">
+    <kd-zero-state-text ng-transclude="zerostate">
+      [[It is possible that all message have expired.|User help on the events page when no events are to be displayed.]]
+      {{::$ctrl.nodeList.listMeta.totalItems}}
+    </kd-zero-state-text>
+  </kd-zero-state>
+
+
+  <!-- resource header columns .-->
+  <kd-resource-card-header-columns ng-show="$ctrl.atlasNodeList.listMeta.totalItems">
+    <!-- define by yourself according to your real requirements -->
+    <kd-resource-card-header-column size="medium"
+                                    grow="4">
+      [[Name|Label 'Name' for the node name column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[IPAddress|Label 'IPAddress' for the node nums column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column size="medium"
+                                    grow="4">
+      [[Role|Label 'Role' for the node Role.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column size="medium"
+                                    grow="4">
+      [[Gpu(Total)|Label 'Gpu' for the node total gpu column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Gpu(Allocated）|Label 'Gpu' for allocated gpu column.]]
+    </kd-resource-card-header-column>
+
+
+  </kd-resource-card-header-columns>
+
+  <!-- resource card info . paginate pagination-id total-items exampleInfo-->
+  <kd-atlas-node-card dir-paginate="node in $ctrl.atlasNodeList.nodes | itemsPerPage: default"
+                      node="node"
+                      total-items="::$ctrl.atlasNodeList.listMeta.totalItems">
+
+  </kd-atlas-node-card>
+
+
+  <!-- footer pagination info -->
+  <kd-resource-card-list-footer>
+    <kd-resource-card-list-pagination></kd-resource-card-list-pagination>
+  </kd-resource-card-list-footer>
+
+</kd-resource-card-list>

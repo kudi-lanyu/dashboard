@@ -1,0 +1,88 @@
+  <kd-warnings warnings="::$ctrl.cluster.errors"></kd-warnings>
+
+  <div ng-if="true">
+
+    <kd-content-card ng-if="true">
+      <kd-content>
+        <kd-atlas-fake-card-list atlas-fake-list="::$ctrl.atlasfakelist"
+                                 atlas-fake-list-resource="::$ctrl.kdAtlasFakeListResource">
+        </kd-atlas-fake-card-list>
+      </kd-content>
+    </kd-content-card>
+  </div>
+
+  <div ng-if="true">
+
+    <kd-content-card ng-if="$ctrl.atlasdisplay.namespaceList.namespaces.length">
+      <kd-content>
+        <kd-namespace-card-list namespace-list="$ctrl.atlasdisplay.namespaceList"
+                                with-statuses="true"
+                                namespace-list-resource="$ctrl.kdNamespaceListResource">
+        </kd-namespace-card-list>
+      </kd-content>
+    </kd-content-card>
+
+    <kd-content-card ng-if="$ctrl.atlasdisplay.nodeList.nodes.length">
+      <kd-content>
+        <kd-node-card-list node-list="$ctrl.atlasdisplay.nodeList"
+                           with-statuses="true"
+                           node-list-resource="$ctrl.kdNodeListResource">
+        </kd-node-card-list>
+      </kd-content>
+    </kd-content-card>
+  </div>
+
+  <div ng-if="true">
+
+    <kd-content-card ng-if="$ctrl.cluster.namespaceList.namespaces.length">
+      <kd-content>
+        <kd-namespace-card-list namespace-list="$ctrl.cluster.namespaceList"
+                                with-statuses="true"
+                                namespace-list-resource="$ctrl.kdNamespaceListResource">
+        </kd-namespace-card-list>
+      </kd-content>
+    </kd-content-card>
+
+    <kd-content-card ng-if="$ctrl.cluster.nodeList.nodes.length">
+      <kd-content>
+        <kd-node-card-list node-list="$ctrl.cluster.nodeList"
+                           with-statuses="true"
+                           node-list-resource="$ctrl.kdNodeListResource">
+        </kd-node-card-list>
+      </kd-content>
+    </kd-content-card>
+
+    <kd-content-card ng-if="$ctrl.cluster.persistentVolumeList.items.length">
+      <kd-content>
+        <kd-persistent-volume-card-list persistent-volume-list="$ctrl.cluster.persistentVolumeList"
+                                        with-statuses="true"
+                                        persistent-volume-list-resource="$ctrl.kdPersistentVolumeListResource">
+        </kd-persistent-volume-card-list>
+      </kd-content>
+    </kd-content-card>
+
+    <kd-content-card ng-if="$ctrl.cluster.roleList.items.length">
+      <kd-content>
+        <kd-role-card-list role-list="$ctrl.cluster.roleList"
+                           with-statuses="false"
+                           role-list-resource="$ctrl.kdRoleListResource">
+        </kd-role-card-list>
+      </kd-content>
+    </kd-content-card>
+
+    <kd-content-card ng-if="$ctrl.cluster.storageClassList.storageClasses.length">
+      <kd-content>
+        <kd-storage-class-card-list storage-class-list="$ctrl.cluster.storageClassList"
+                                    with-statuses="true"
+                                    storage-class-list-resource="$ctrl.kdStorageClassListResource">
+        </kd-storage-class-card-list>
+      </kd-content>
+    </kd-content-card>
+
+  </div>
+
+  <kd-content-card ng-if="$ctrl.shouldShowZeroState()">
+    <kd-content>
+      <kd-zero-state></kd-zero-state>
+    </kd-content>
+  </kd-content-card>

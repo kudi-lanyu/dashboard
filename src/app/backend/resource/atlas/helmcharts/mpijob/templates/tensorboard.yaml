@@ -1,0 +1,55 @@
+{{- if .Values.useTensorboard }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "mpijob.fullname" . }}
+  labels:
+    app: {{ template "mpijob.name" . }}
+    chart: {{ template "mpijob.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    createdBy: "MPIJob"
+    role: tensorboard
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "mpijob.name" . }}
+        chart: {{ template "mpijob.chart" . }}
+        release: {{ .Release.Name }}
+        role: tensorboard
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: mpi_job_name
+                operator: In
+                values: 
+                  - {{ template "mpijob.fullname" . }}
+            topologyKey: kubernetes.io/hostname
+      volumes:
+        {{- if .Values.isLocalLogging }}
+        - hostPath:
+            path: "{{ .Values.hostLogPath }}"
+          name: training-logs-volume
+        {{- end }}
+      containers:
+      - name: tensorboard   
+        {{- if .Values.isLocalLogging }}
+        command: ["tensorboard", "--logdir", "/output/training_logs",  "--host",  "0.0.0.0"]
+        {{- else}}
+        command: ["tensorboard", "--logdir", "{{ .Values.trainingLogdir }}",  "--host",  "0.0.0.0"]
+        {{- end }}
+        image: "{{ .Values.tensorboardImage }}"
+        imagePullPolicy: {{ .Values.tensorboardImagePullpolicy }}
+        ports:
+        - containerPort: 6006
+        volumeMounts:
+        {{- if .Values.isLocalLogging }}
+        - mountPath: /output/training_logs
+          name: training-logs-volume
+        {{- end }}
+{{- end }}

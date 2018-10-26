@@ -1,0 +1,53 @@
+<!-- resource card -->
+<kd-resource-card object-meta="$ctrl.job.objectMeta"
+                  type-meta="$ctrl.job.typeMeta">
+
+  <!-- resource status info . yes or no-->
+  <kd-resource-card-status>
+    <md-icon class="material-icons kd-error"
+             ng-if="::$ctrl.isInNotReadyState()">
+      error
+    </md-icon>
+    <md-icon class="material-icons"
+             ng-if="::$ctrl.isInUnknownState()">
+      help
+    </md-icon>
+    <md-icon class="material-icons kd-success"
+             ng-if="::$ctrl.isInReadyState()">
+      check_circle
+    </md-icon>
+  </kd-resource-card-status>
+
+  <!-- resource card info -->
+  <kd-resource-card-columns>
+    <!-- card column info  -->
+    <kd-resource-card-header-column>
+      [[Name|Label 'Name' for the job name column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Status|Label 'Status' for the job status column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Trainer|Label 'Trainer' for the job trainer.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Age|Label 'Age' for the job created time.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Node|Label 'Node' for the job node column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Gpu(Requests)|Label 'Gpu(Requests)' for the gpu count required of trainer job column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Gpu(Allocated)|Label 'Gpu(Allocated)' for the gpu count allocated of trainer job column.]]
+    </kd-resource-card-header-column>
+
+  </kd-resource-card-columns>
+</kd-resource-card>

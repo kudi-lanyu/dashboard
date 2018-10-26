@@ -1,0 +1,145 @@
+<!--
+Copyright 2017 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<kd-content-card>
+  <kd-content>
+    <md-tabs md-dynamic-height
+             md-border-bottom
+             class="kd-deploy-tabs">
+      <md-tab label="[[Atlas deploy example |Create from text input tab on deploy page.]]">
+        <form name="$ctrl.form"
+              ng-submit="$ctrl.deploy()"
+              novalidate>
+          <kd-help-section>
+            <md-input-container class="md-block"
+                                md-is-error="$ctrl.isNameError()">
+              <label>[[Name|Label 'Name', which appears as a placeholder in an empty input field on the deploy from
+                settings page.]]</label>
+              <div>
+                <input ng-model="$ctrl.name"
+                       name="name"
+                       namespace="$ctrl.namespace"
+                       required
+                       ng-pattern="$ctrl.namePattern"
+                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                       kd-unique-name
+                       md-maxlength="{{$ctrl.nameMaxLength}}">
+                <md-progress-linear class="kd-deploy-form-progress"
+                                    md-mode="indeterminate"
+                                    ng-class="{'kd-deploy-form-progress-show': $ctrl.form.name.$pending}">
+                </md-progress-linear>
+              </div>
+            </md-input-container>
+
+            <kd-user-help>
+              [[An 'app' label with this value will be added to the Deployment and Service that get deployed.|User help
+              for name field on deploy from settings page.]]
+              <a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+                 target="_blank"
+                 tabindex="-1">
+                [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+              </a>
+            </kd-user-help>
+          </kd-help-section>
+
+          <kd-help-section>
+            <div layout="row">
+              <md-input-container flex="auto">
+                <label>[[CPU requirement (cores)|CPU requirement label on the deploy from settings page.]]</label>
+                <input ng-model="$ctrl.cpuRequirement"
+                       type="number"
+                       name="cpuRequirement"
+                       min="0">
+              </md-input-container>
+              <div flex="5"></div>
+              <md-input-container flex="auto">
+                <label>[[Memory requirement (MiB)|Memory requirement label on the deploy from settings page.]]</label>
+                <input ng-model="$ctrl.memoryRequirement"
+                       type="number"
+                       name="memoryRequirement"
+                       min="0">
+              </md-input-container>
+            </div>
+            <kd-user-help>
+              [[You can specify minimum CPU and memory requirements for the container.|User help for the memory and cpu
+              requirement inputs on the deploy from settings page.]]
+              <a href="https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/memory-default-namespace/"
+                 target="_blank"
+                 tabindex="-1">
+                [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+              </a>
+            </kd-user-help>
+          </kd-help-section>
+
+          <kd-help-section>
+            <div>
+              <md-input-container class="md-block">
+                <label>[[Run command|Run command label (a noun, not a verb) on the deploy from settings page.]]</label>
+                <input ng-model="$ctrl.containerCommand">
+              </md-input-container>
+
+              <md-input-container class="md-block">
+                <label>[[Run command arguments|Run command arguments label on the deploy from settings page.]]</label>
+                <input ng-model="$ctrl.containerCommandArgs">
+              </md-input-container>
+            </div>
+            <kd-user-help>
+              [[By default, your containers run the selected image's default entrypoint command. You can use the command
+              options to override the default.|User help for the run command input on the deploy from settings page.]]
+              <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/"
+                 target="_blank"
+                 tabindex="-1">
+                [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+              </a>
+            </kd-user-help>
+          </kd-help-section>
+
+          <kd-help-section>
+            <div class="md-block">
+              <md-checkbox ng-model="$ctrl.runAsPrivileged"
+                           class="md-primary">
+                [[Run as privileged|Run as privileged label for the corresponding checkbox on the deploy from settings
+                page.]]
+              </md-checkbox>
+            </div>
+            <kd-user-help>
+              [[Processes in privileged containers are equivalent to processes running as root on the host.|User help
+              for the run as privileged checkbox input on the deploy from settings page.]]
+              <a href="https://kubernetes.io/docs/concepts/workloads/pods/pod/#privileged-mode-for-pod-containers"
+                 target="_blank"
+                 tabindex="-1">
+                [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+              </a>
+            </kd-user-help>
+          </kd-help-section>
+
+          </div>
+
+          <md-button class="md-raised md-primary kd-deploy-submit-button"
+                     type="submit"
+                     ng-disabled="$ctrl.isDeployDisabled()">
+            [[Deploy|Deploy button label that appears on deploy from settings page.]]
+          </md-button>
+
+          <md-button class="md-primary kd-deploy-cancel-button"
+                     ng-click="$ctrl.cancel()">
+            [[Cancel|Cancel button label that appears on deploy from settings page.]]
+          </md-button>
+        </form>
+      </md-tab>
+
+    </md-tabs>
+  </kd-content>
+</kd-content-card>

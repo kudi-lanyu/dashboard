@@ -1,0 +1,5 @@
+FROM yzs_dashboard:0.1
+
+WORKDIR /dashboard
+
+COPY ./ ./

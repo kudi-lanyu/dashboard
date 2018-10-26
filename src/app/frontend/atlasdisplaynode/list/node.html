@@ -1,0 +1,44 @@
+<!-- resource card -->
+<kd-resource-card object-meta="$ctrl.node.objectMeta"
+                  type-meta="$ctrl.node.typeMeta">
+
+  <!-- resource status info . yes or no-->
+  <kd-resource-card-status>
+    <md-icon class="material-icons kd-error"
+             ng-if="::$ctrl.isInNotReadyState()">
+      error
+    </md-icon>
+    <md-icon class="material-icons"
+             ng-if="::$ctrl.isInUnknownState()">
+      help
+    </md-icon>
+    <md-icon class="material-icons kd-success"
+             ng-if="::$ctrl.isInReadyState()">
+      check_circle
+    </md-icon>
+  </kd-resource-card-status>
+
+  <!-- resource card info -->
+  <kd-resource-card-columns>
+    <!-- card column info  -->
+    <kd-resource-card-column>
+      {{::$ctrl.node.objectMeta.name}}
+    </kd-resource-card-column>
+    <kd-resource-card-column>
+      {{::$ctrl.ipAddress}}
+    </kd-resource-card-column>
+
+    <kd-resource-card-column>
+      {{::$ctrl.role}}
+    </kd-resource-card-column>
+
+    <kd-resource-card-column>
+      {{::$ctrl.totalGpu}}
+    </kd-resource-card-column>
+
+    <kd-resource-card-column>
+      {{::$ctrl.allocatedGpu}}
+    </kd-resource-card-column>
+
+  </kd-resource-card-columns>
+</kd-resource-card>

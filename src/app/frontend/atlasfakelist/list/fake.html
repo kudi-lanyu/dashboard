@@ -1,0 +1,49 @@
+<!-- resource card -->
+<kd-resource-card object-meta="$ctrl.spec.objectMeta"
+                  type-meta="$ctrl.spec.typeMeta">
+
+  <!-- resource status info . yes or no-->
+  <kd-resource-card-status>
+    <md-icon class="material-icons kd-error"
+             ng-if="::$ctrl.isInNotReadyState()">
+      error
+    </md-icon>
+    <md-icon class="material-icons"
+             ng-if="::$ctrl.isInUnknownState()">
+      help
+    </md-icon>
+    <md-icon class="material-icons kd-success"
+             ng-if="::$ctrl.isInReadyState()">
+      check_circle
+    </md-icon>
+  </kd-resource-card-status>
+
+  <!-- resource card info -->
+  <kd-resource-card-columns>
+    <!-- card column info  -->
+    <kd-resource-card-column size="medium" grow="4">
+      {{::$ctrl.spec.name}}
+    </kd-resource-card-column>
+    <kd-resource-card-column>
+      {{::$ctrl.spec.nums}}
+    </kd-resource-card-column>
+
+    <kd-resource-card-column size="medium"
+                             grow="4">
+      <div ng-repeat="nestObject in ::$ctrl.spec.list">
+          {{::nestObject.field_1}}: {{::nestObject.field_2}}
+      </div>
+      <div ng-if="::!$ctrl.spec.list">-</div>
+    </kd-resource-card-column>
+
+    <kd-resource-card-column size="medium"
+                             grow="4">
+      <kd-labels labels="::$ctrl.spec.map"></kd-labels>
+    </kd-resource-card-column>
+
+    <kd-resource-card-column>
+      {{::$ctrl.spec.bool}}
+    </kd-resource-card-column>
+
+  </kd-resource-card-columns>
+</kd-resource-card>

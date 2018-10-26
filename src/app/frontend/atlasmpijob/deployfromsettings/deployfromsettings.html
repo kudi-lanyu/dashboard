@@ -1,0 +1,598 @@
+<!--
+Copyright 2017 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<form name="$ctrl.form"
+      ng-submit="$ctrl.deploy()"
+      novalidate>
+  <!-- default -->
+  <!-- name -->
+  <kd-help-section>
+    <md-input-container class="md-block"
+                        md-is-error="$ctrl.isNameError()">
+      <label>[[Job Name|Label 'Job Name', which appears as a placeholder in an empty input field on the deploy from
+        settings page.]]</label>
+      <div>
+        <input ng-model="$ctrl.name"
+               name="name"
+               namespace="$ctrl.namespace"
+               required
+               ng-pattern="$ctrl.namePattern"
+               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+               kd-unique-name
+               md-maxlength="{{$ctrl.nameMaxLength}}">
+        <md-progress-linear class="kd-deploy-form-progress"
+                            md-mode="indeterminate"
+                            ng-class="{'kd-deploy-form-progress-show': $ctrl.form.name.$pending}">
+        </md-progress-linear>
+        <ng-messages for="$ctrl.form.name.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="required">[[Job name is required.|Appears to tell the user that Job name input on
+            the deploy from settings page is required.]]
+          </ng-message>
+          <ng-message when="uniqueName">
+            [[Deployment or service with this name already exists within namespace.|Appears as warning when the user has
+            typed in an app name that already exists. The text is followed by a specific namespace name.]]
+            <i>{{$ctrl.namespace}}</i>.
+          </ng-message>
+          <ng-message when="pattern">
+            [[Application name must start with a lowercase letter and contain only lowercase letters, numbers, and '-'
+            between words.|Appears when the app name input on the deploy from settings page does not match the expected
+            pattern.]]
+          </ng-message>
+          <ng-message when="md-maxlength">
+            [[Job name must be up to {{$ctrl.nameMaxLength}} characters long.|Name max length warning on deploy from
+            settings page.]]
+          </ng-message>
+        </ng-messages>
+      </div>
+
+    </md-input-container>
+    <kd-user-help>
+      [[An 'Job name' label with this value will be added to the Deployment and Service that get deployed.|User help for
+      name
+      field on deploy from settings page.]]
+      <a href="http://www.unisound.com"
+         target="_blank"
+         tabindex="-1">
+        [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+      </a>
+    </kd-user-help>
+  </kd-help-section>
+  <!-- image -->
+  <kd-help-section>
+    <md-input-container class="md-block">
+      <label>[[Job image|Job image label on the deploy from settings page.]]</label>
+      <input ng-model="$ctrl.image"
+             name="image"
+             required
+             ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+             kd-valid-imagereference
+             invalid-image-error-message="$ctrl.image">
+      <ng-messages for="$ctrl.form.image.$error"
+                   role="alert"
+                   multiple>
+        <ng-message when="required">
+          [[Job image is required|Job image is required warning on deploy from settings page.]]
+        </ng-message>
+        <ng-message when="validImageReference">
+          [[Job image is invalid:|Job image is invalid warning on deploy from settings
+          page.]]
+        </ng-message>
+      </ng-messages>
+    </md-input-container>
+    <kd-user-help>
+      [[Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or Google Container
+      Registry.|User help for container image on deploy from settings page.]]
+      <a href="http://kubernetes.io/docs/user-guide/images/"
+         target="_blank"
+         tabindex="-1">
+        [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+      </a>
+    </kd-user-help>
+  </kd-help-section>
+  <!-- cpu gpus memory -->
+  <kd-help-section>
+    <div layout="row">
+      <md-input-container flex="auto">
+        <label>[[GPU Count|GPU Count label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.gpus"
+               type="number"
+               required
+               name="gpus"
+               min="0">
+        <ng-messages for="$ctrl.form.gpus.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="number">
+            [[GPU Count must be given as a valid number.|Appears to tell the user that the typed in GPU cores
+            count on the deploy page is not a number.]]
+          </ng-message>
+          <ng-message when="min">
+            [[GPU requirement must be given as a positive number.|Appears to tell the user that the typed in number of
+            GPU cores cannot be negative.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+      <div flex="5"></div>
+      <md-input-container flex="auto">
+        <label>[[CPU count (cores)|CPU count label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.cpu"
+               type="number"
+               name="cpu"
+               min="0">
+        <ng-messages for="$ctrl.form.cpu.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="number">
+            [[CPU count must be given as a valid number.|Appears to tell the user that the typed in CPU cores
+            count on the deploy page is not a number.]]
+          </ng-message>
+          <ng-message when="min">
+            [[CPU count must be given as a positive number.|Appears to tell the user that the typed in number of
+            CPU cores cannot be negative.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+      <div flex="5"></div>
+      <md-input-container flex="auto">
+        <label>[[Memory (MiB)|Memory label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.memory"
+               type="number"
+               name="memory"
+               min="0">
+        <ng-messages for="$ctrl.form.memory.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="number">
+            [[Memory must be given as a valid number.|Appears to tell the user that the typed in memory on
+            the deploy page is not a number.]]
+          </ng-message>
+          <ng-message when="min">
+            [[Memory must be given as a positive number.|Appears to tell the user that the typed in memory
+            (on the deploy page) cannot be negative.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+    </div>
+    <kd-user-help>
+      [[You can specify minimum GPU、CPU and Memory requirements for the Job.|User help for the memory and cpu
+      requirement inputs on the deploy from settings page.]]
+      <a href="http://kubernetes.io/docs/admin/limitrange/"
+         target="_blank"
+         tabindex="-1">
+        [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+      </a>
+    </kd-user-help>
+  </kd-help-section>
+  <!-- command -->
+  <kd-help-section>
+    <div>
+      <md-input-container class="md-block">
+        <label>[[Command|Command label (a noun, not a verb) on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.command">
+      </md-input-container>
+
+      <md-input-container class="md-block">
+        <label>[[Command arguments|Command arguments label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.command">
+      </md-input-container>
+    </div>
+    <kd-user-help>
+      [[By default, your containers run the selected image's default entrypoint command. You can use the command
+      options to override the default.|User help for the run command input on the deploy from settings page.]]
+      <a href="http://kubernetes.io/docs/user-guide/containers/"
+         target="_blank"
+         tabindex="-1">
+        [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+      </a>
+    </kd-user-help>
+  </kd-help-section>
+
+  <div ng-show="$ctrl.isMoreOptionsEnabled()"
+       ng-hide="!$ctrl.isMoreOptionsEnabled()">
+    <!-- common optional -->
+
+    <!-- mpijobenvs -->
+    <kd-help-section>
+      <kd-atlas-envs variables="$ctrl.envs">
+      </kd-atlas-envs>
+      <kd-user-help>
+        [[Environment variables available for use in the container. Values can reference other variables using
+        $(VAR_NAME) syntax.|User help for the environment variables section on the deploy from settings page.]]
+        <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+
+    <!-- workingDir -->
+    <kd-help-section>
+      <md-input-container class="md-block">
+        <label>[[workingDir|workingDir label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.workingDir"
+               name="workingDir"
+               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+        <ng-messages for="$ctrl.form.workingDir.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="required">
+            [[workingDir is required|workingDir is required warning on deploy from settings page.]]
+          </ng-message>
+          <ng-message when="validImageReference">
+            [[workingDir is invalid:|workingDir is invalid warning on deploy from settings
+            page.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+      <kd-user-help>
+        [[Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or Google Container
+        Registry.|User help for container image on deploy from settings page.]]
+        <a href="http://kubernetes.io/docs/user-guide/images/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+
+    <!-- retry-->
+    <kd-help-section>
+      <md-input-container flex="auto">
+        <label>[[Retry|Retry label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.retry"
+               type="number"
+               name="retry"
+               min="0">
+        <ng-messages for="$ctrl.form.retry.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="number">
+            [[Retry must be given as a valid number.]]
+          </ng-message>
+          <ng-message when="min">
+            [[Retry must be given as a positive number.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+      <!-- <div layout="row">
+        <md-input-container flex="auto">
+          <label>[[WorkerCount|WorkerCount label on the deploy from settings page.]]</label>
+          <input ng-model="$ctrl.workerCount"
+                 type="number"
+                 name="workerCount"
+                 min="0">
+          <ng-messages for="$ctrl.form.workerCount.$error"
+                       role="alert"
+                       multiple>
+            <ng-message when="number">
+              [[WorkerCount must be given as a valid number.]]
+            </ng-message>
+            <ng-message when="min">
+              [[WorkerCount must be given as a positive number.]]
+            </ng-message>
+          </ng-messages>
+        </md-input-container>
+        <div flex="5"></div>
+      </div> -->
+      <kd-user-help>
+        [[You can specify minimum CPU、GPU and memory requirements for the container.|User help for the memory and cpu
+        requirement inputs on the deploy from settings page.]]
+        <a href="http://kubernetes.io/docs/admin/limitrange/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+
+    <!-- atlas-dashboard rel1 -->
+    <!-- mpijobdataset -->
+    <kd-help-section>
+      <kd-atlas-mpi-job-data-set variables="$ctrl.dataset">
+      </kd-atlas-mpi-job-data-set>
+      <kd-user-help>
+        [[Dataset available for use in the container. Values can reference other variables using $(VAR_NAME)
+        syntax.|User help for the Dataset variables section on the deploy from settings page.]]
+        <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+
+    <!-- dataDirs -->
+    <kd-help-section>
+      <kd-atlas-mpi-job-data-dirs variables="$ctrl.dataDirs">
+      </kd-atlas-mpi-job-data-dirs>
+      <kd-user-help>
+        [[DataDirs available for use in the container. Values can reference other variables using $(VAR_NAME)
+        syntax.|User help for the DataDirs variables section on the deploy from settings page.]]
+        <a href="https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+
+    <!-- tensorboard optional-->
+    <!-- useTensorboard -->
+    <kd-help-section>
+      <div class="md-block">
+        <md-checkbox ng-model="$ctrl.useTensorboard"
+                     class="md-primary">
+          [[Use Tensorboard|Use Tensorboard label for the corresponding checkbox on the deploy from settings page.]]
+        </md-checkbox>
+      </div>
+      <kd-user-help>
+        [[Use Tensorboard.|User help for the run as privileged checkbox input on the deploy from settings page.]]
+        <a href="http://kubernetes.io/docs/user-guide/pods/#privileged-mode-for-pod-containers"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+
+
+    <div ng-show="$ctrl.isUseTensorboardEnabled()"
+         ng-hide="!$ctrl.isUseTensorboardEnabled()">
+
+      <!-- hostLogPath -->
+      <kd-help-section>
+        <md-input-container class="md-block">
+          <label>[[hostLogPath|hostLogPath label on the deploy from settings page.]]</label>
+          <input ng-model="$ctrl.hostLogPath"
+                 name="hostLogPath"
+                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                 invalid-image-error-message="$ctrl.hostLogPath">
+          <ng-messages for="$ctrl.form.hostLogPath.$error"
+                       role="alert"
+                       multiple>
+            <ng-message when="required">
+              [[hostLogPath is required|hostLogPath is required warning on deploy from settings page.]]
+            </ng-message>
+            <ng-message when="validImageReference">
+              [[hostLogPath is invalid:|hostLogPath is invalid warning on deploy from settings
+              page.]]
+            </ng-message>
+          </ng-messages>
+        </md-input-container>
+        <kd-user-help>
+          [[Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or Google Container
+          Registry.|User help for container image on deploy from settings page.]]
+          <a href="http://kubernetes.io/docs/user-guide/images/"
+             target="_blank"
+             tabindex="-1">
+            [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+          </a>
+        </kd-user-help>
+      </kd-help-section>
+
+      <!-- isLocalLogging -->
+
+      <!-- trainingLogdir -->
+      <kd-help-section>
+        <md-input-container class="md-block">
+          <label>[[trainingLogdir|trainingLogdir label on the deploy from settings page.]]</label>
+          <input ng-model="$ctrl.trainingLogdir"
+                 name="trainingLogdir"
+                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                 invalid-image-error-message="$ctrl.trainingLogdir">
+          <ng-messages for="$ctrl.form.trainingLogdir.$error"
+                       role="alert"
+                       multiple>
+            <ng-message when="required">
+              [[workingDir is required|workingDir is required warning on deploy from settings page.]]
+            </ng-message>
+            <ng-message when="validImageReference">
+              [[workingDir is invalid:|workingDir is invalid warning on deploy from settings
+              page.]]
+            </ng-message>
+          </ng-messages>
+        </md-input-container>
+        <kd-user-help>
+          [[Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or Google Container
+          Registry.|User help for container image on deploy from settings page.]]
+          <a href="http://kubernetes.io/docs/user-guide/images/"
+             target="_blank"
+             tabindex="-1">
+            [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+          </a>
+        </kd-user-help>
+      </kd-help-section>
+
+    </div>
+
+
+    <!-- synccode optional-->
+    <!-- syncMode-->
+    <kd-help-section>
+      <md-input-container class="md-block">
+        <label>[[syncMode|syncMode label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.syncMode"
+               name="syncMode"
+               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+               invalid-image-error-message="$ctrl.syncMode">
+        <ng-messages for="$ctrl.form.syncMode.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="required">
+            [[syncMode is required|syncMode is required warning on deploy from settings page.]]
+          </ng-message>
+          <ng-message when="validImageReference">
+            [[syncMode is invalid:|syncMode is invalid warning on deploy from settings
+            page.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+      <kd-user-help>
+        [[Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or Google Container
+        Registry.|User help for container image on deploy from settings page.]]
+        <a href="http://kubernetes.io/docs/user-guide/images/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+    <!-- syncSource -->
+    <kd-help-section>
+      <md-input-container class="md-block">
+        <label>[[syncSource|syncSource label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.syncSource"
+               name="syncSource"
+               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+               invalid-image-error-message="$ctrl.syncSource">
+        <ng-messages for="$ctrl.form.syncSource.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="required">
+            [[syncSource is required|syncSource is required warning on deploy from settings page.]]
+          </ng-message>
+          <ng-message when="validImageReference">
+            [[syncSource is invalid:|syncSource is invalid warning on deploy from settings
+            page.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+      <kd-user-help>
+        [[Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or Google Container
+        Registry.|User help for container image on deploy from settings page.]]
+        <a href="http://kubernetes.io/docs/user-guide/images/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+    <!-- syncImage -->
+    <kd-help-section>
+      <md-input-container class="md-block">
+        <label>[[syncImage|syncImage label on the deploy from settings page.]]</label>
+        <input ng-model="$ctrl.syncImage"
+               name="syncImage"
+               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+               invalid-image-error-message="$ctrl.syncImage">
+        <ng-messages for="$ctrl.form.syncImage.$error"
+                     role="alert"
+                     multiple>
+          <ng-message when="required">
+            [[syncImage is required|syncImage is required warning on deploy from settings page.]]
+          </ng-message>
+          <ng-message when="validImageReference">
+            [[syncImage is invalid.|syncImage is invalid warning on deploy from settings page.]]
+          </ng-message>
+        </ng-messages>
+      </md-input-container>
+      <kd-user-help>
+        [[Enter the URL of a public image on any registry, or a private image hosted on Docker Hub or Google Container
+        Registry.|User help for container image on deploy from settings page.]]
+        <a href="http://kubernetes.io/docs/user-guide/images/"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+    <!-- syncGitProjectName -->
+    <kd-help-section>
+      <md-input-container class="md-block"
+                          md-is-error="$ctrl.isNameError()">
+        <label>[[syncGitProjectName|Label 'syncGitProjectName'.]]</label>
+        <div>
+          <input ng-model="$ctrl.syncGitProjectName"
+                 name="syncGitProjectName"
+                 namespace="$ctrl.namespace"
+                 ng-pattern="$ctrl.namePattern"
+                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                 md-maxlength="{{$ctrl.nameMaxLength}}">
+          <md-progress-linear class="kd-deploy-form-progress"
+                              md-mode="indeterminate"
+                              ng-class="{'kd-deploy-form-progress-show': $ctrl.form.syncGitProjectName.$pending}">
+          </md-progress-linear>
+          <ng-messages for="$ctrl.form.syncGitProjectName.$error"
+                       role="alert"
+                       multiple>
+            <ng-message when="required">[[syncGitProjectName is required.|Appears to tell the user that MpiJob name
+              input on
+              the deploy from settings page is required.]]
+            </ng-message>
+            <ng-message when="uniqueName">
+              [[Deployment or service with this name already exists within namespace.|Appears as warning when the user
+              has
+              typed in an app name that already exists. The text is followed by a specific namespace name.]]
+              <i>{{$ctrl.namespace}}</i>.
+            </ng-message>
+            <ng-message when="pattern">
+              [[Application name must start with a lowercase letter and contain only lowercase letters, numbers, and '-'
+              between words.|Appears when the app name input on the deploy from settings page does not match the
+              expected
+              pattern.]]
+            </ng-message>
+            <ng-message when="md-maxlength">
+              [[Name must be up to {{$ctrl.nameMaxLength}} characters long.|Name max length warning on deploy from
+              settings page.]]
+            </ng-message>
+          </ng-messages>
+        </div>
+
+      </md-input-container>
+      <kd-user-help>
+        [[An 'name' label with this value will be added to the Deployment and Service that get deployed.|User help for
+        name
+        field on deploy from settings page.]]
+        <a href="http://www.unisound.com"
+           target="_blank"
+           tabindex="-1">
+          [[Learn more|Learn more link on deploy from settings page.]] <i class="material-icons">open_in_new</i>
+        </a>
+      </kd-user-help>
+    </kd-help-section>
+
+
+  </div>
+
+  <div>
+    <md-button class="md-primary kd-deploy-moreoptions-button"
+               type="button"
+               ng-click="$ctrl.switchMoreOptions()"
+               ng-hide="$ctrl.isMoreOptionsEnabled()">
+      [[Show advanced options|Show advanced options label that appears on deploy from settings page.]]
+    </md-button>
+    <md-button class="md-primary kd-deploy-moreoptions-button"
+               type="button"
+               ng-click="$ctrl.switchMoreOptions()"
+               ng-show="$ctrl.isMoreOptionsEnabled()">
+      [[Hide advanced options|Hide advanced options label that appears on deploy from settings page.]]
+    </md-button>
+  </div>
+
+  <md-button class="md-raised md-primary kd-deploy-submit-button"
+             type="submit"
+             ng-disabled="$ctrl.isDeployDisabled()">
+    [[Deploy|Deploy button label that appears on deploy from settings page.]]
+  </md-button>
+
+  <md-button class="md-primary kd-deploy-cancel-button"
+             ng-click="$ctrl.cancel()">
+    [[Cancel|Cancel button label that appears on deploy from settings page.]]
+  </md-button>
+</form>

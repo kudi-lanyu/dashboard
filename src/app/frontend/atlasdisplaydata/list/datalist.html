@@ -1,0 +1,69 @@
+<!-- resource card list . attribute is some information should inject  -->
+<kd-resource-card-list selectable="false"
+                       with-statuses="true"
+                       list="$ctrl.atlasDataList"
+                       list-resource="$ctrl.atlasDataListResource">
+
+
+  <!-- resource list header with title -->
+  <kd-resource-card-list-header>
+    <kd-resource-card-list-title>
+      [[Atlasdisplaydata|Label which appears above the list of such objects.]]
+    </kd-resource-card-list-title>
+  </kd-resource-card-list-header>
+
+  <!-- display some message when cluster don't have that resource -->
+  <kd-zero-state ng-if="!$ctrl.atlasDataList.listMeta.totalItems">
+  <kd-zero-state-text ng-transclude="zerostate">
+    [[It is possible that all message have expired.|User help on the events page when no events are to be displayed.]]
+    {{::$ctrl.dataList.listMeta.totalItems}}
+  </kd-zero-state-text>
+  </kd-zero-state>
+
+  <!-- resource header columns .-->
+  <!-- <kd-resource-card-header-columns ng-show="$ctrl.atlasDataList.listMeta.totalItems"> -->
+  <kd-resource-card-header-columns ng-show="$ctrl.atlasDataList.listMeta.totalItems">
+    <!-- define by yourself according to your real requirements -->
+    <kd-resource-card-header-column sortable="true"
+                                    sort-id="$root.SortableProperties.NAME">
+      [[Name|Label 'Name' for the data name column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Namespace|Label 'Namespace' for the data namespace column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Accessmode|Label 'Accessmode' for the pvc accessmode.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Description|Label 'Description' for the data pvc description column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column>
+      [[Owner|Label 'Owner' for pvc owner column.]]
+    </kd-resource-card-header-column>
+
+    <kd-resource-card-header-column sortable="true"
+                                    sort-id="$root.SortableProperties.AGE">
+      [[Age|Label 'Age' for pvc owner column.]]
+    </kd-resource-card-header-column>
+
+
+  </kd-resource-card-header-columns>
+
+  <!-- resource card info . paginate pagination-id total-items exampleInfo-->
+  <kd-atlas-data-card dir-paginate="pvc in $ctrl.atlasDataList.items | itemsPerPage: default"
+                      pvc="pvc"
+                      total-items="::$ctrl.atlasDataList.listMeta.totalItems">
+
+  </kd-atlas-data-card>
+
+
+  <!-- footer pagination info -->
+  <kd-resource-card-list-footer>
+    <kd-resource-card-list-pagination></kd-resource-card-list-pagination>
+  </kd-resource-card-list-footer>
+
+</kd-resource-card-list>

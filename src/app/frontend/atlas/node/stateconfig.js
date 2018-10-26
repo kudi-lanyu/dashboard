@@ -12,35 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {stateName as parentState} from '../chrome/state';
-import {breadcrumbsConfig} from '../common/components/breadcrumbs/service';
+import {stateName as chromeStateName} from '../../chrome/state';
 
-import {stateName, stateUrl} from './state';
-
+import {stateName as detailState} from './detail/state';
+import {config as detailConfig} from './detail/stateconfig';
+import {stateName as listState} from './list/state';
+import {config as listConfig} from './list/stateconfig';
+import {stateName} from './state';
 /**
- * Configures states for the deploy view.
+ * Configures states for the Node resource.
  *
  * @param {!ui.router.$stateProvider} $stateProvider
  * @ngInject
  */
 export default function stateConfig($stateProvider) {
-  $stateProvider.state(stateName, {
-    parent: parentState,
-    url: stateUrl,
-    views: {
-      '': {
-        templateUrl: 'deploy/deploy.html',
-      },
-    },
-    data: {
-      [breadcrumbsConfig]: {
-        'label': i18n.MSG_BREADCRUMBS_DEPLOY_APP_LABEL,
-      },
-    },
-  });
+  $stateProvider.state(stateName, config)
+      .state(listState, listConfig)
+      .state(detailState, detailConfig);
 }
 
-const i18n = {
-  /** @type {string} @desc Breadcrumb label for the deploy view. */
-  MSG_BREADCRUMBS_DEPLOY_APP_LABEL: goog.getMsg('Resource creation'),
+/**
+ * Config state object for the Ingress abstract state.
+ *
+ * @type {!ui.router.StateConfig}
+ */
+const config = {
+  abstract: true,
+  parent: chromeStateName,
+  template: '<ui-view/>',
 };
