@@ -24,20 +24,21 @@
     <kd-resource-card-column>
       {{::$ctrl.node.objectMeta.name}}
     </kd-resource-card-column>
+
     <kd-resource-card-column>
-      {{::$ctrl.ipAddress}}
+      {{::$ctrl.nodeInfo.ipAddress}}
     </kd-resource-card-column>
 
     <kd-resource-card-column>
-      {{::$ctrl.role}}
+      <kd-labels labels="::$ctrl.nodeInfo.nodeRole"></kd-labels>
     </kd-resource-card-column>
 
     <kd-resource-card-column>
-      {{::$ctrl.totalGpu}}
+      {{::$ctrl.nodeInfo.nodeTotalGpuCount}}
     </kd-resource-card-column>
 
     <kd-resource-card-column>
-      {{::$ctrl.allocatedGpu}}
+      {{::$ctrl.nodeInfo.nodeAllocatedGpuCount}}
     </kd-resource-card-column>
 
   </kd-resource-card-columns>

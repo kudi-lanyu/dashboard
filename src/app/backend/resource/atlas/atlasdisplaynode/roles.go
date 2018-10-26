@@ -4,6 +4,7 @@ import (
   "k8s.io/apimachinery/pkg/util/sets"
   "k8s.io/api/core/v1"
   "strings"
+  "log"
 )
 
 // findNodeRoles returns the roles of a given node.
@@ -23,6 +24,7 @@ func findNodeRoles(node *v1.Node) []string {
       roles.Insert(v)
     }
   }
+  log.Println("role list:", roles.List())
   return roles.List()
 }
 

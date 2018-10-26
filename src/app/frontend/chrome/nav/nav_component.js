@@ -37,6 +37,18 @@ import {stateName as statefulSetState} from '../../statefulset/list/state';
 import {stateName as storageClassState} from '../../storageclass/list/state';
 import {stateName as workloadState} from '../../workloads/state';
 
+// atlas tasks
+import {stateName as atlastasksState} from '../../atlastasks/state';
+import {stateName as atlasmpijobState} from '../../atlasmpijob/state';
+
+// atlas display
+import {stateName as atlasdisplayState} from '../../atlasdisplay/state';
+import {stateName as atlasdisplaynodeState} from '../../atlasdisplaynode/list/state';
+import {stateName as atlasdisplaydataState} from '../../atlasdisplaydata/list/state';
+import {stateName as atlasdisplayjobState} from '../../atlasdisplayjob/list/state';
+import {stateName as atlasfakelistState} from '../../atlasfakelist/list/state';
+
+
 /**
  * @final
  */
@@ -75,6 +87,16 @@ export class NavController {
       'about': aboutState,
       'settings': settingsState,
       'overview': overviewState,
+      // atlas tasks
+      'atlastasks': atlastasksState,
+      'atlasmpijob': atlasmpijobState,
+
+      // atlas display
+      'atlasdisplay': atlasdisplayState,
+      'atlasdisplaydata': atlasdisplaydataState,
+      'atlasdisplaynode': atlasdisplaynodeState,
+      'atlasdisplayjob': atlasdisplayjobState,
+      'atlasfakelist': atlasfakelistState,
     };
   }
 

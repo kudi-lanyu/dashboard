@@ -1569,3 +1569,91 @@ backendApi.SystemBanner;
  * }}
  */
 backendApi.CanIResponse;
+
+
+/**
+ * @typedef{{
+ *  syncMode: string,
+ *  syncSource: string,
+ *  syncImage: string,
+ *  syncGitProjectName string
+ * }}
+ */
+backendApi.SyncCodeArgs;
+
+/**
+ * @typedef{{
+ *  useTensorboard: boolean,
+ *  tensorboardImage: string,
+ *  trainingLogdir: string,
+ *  hstLogPath: string,
+ *  isLocalLogging: boolean
+ * }}
+ */
+backendApi.TensoboardArgs;
+/**
+ * @typedef{{
+ *  image: string,
+ *  gpuCount: number,
+ *  mpijobenvs: map[string]string,
+ *  workingDir: string,
+ *  command: string,
+ *  mode: string,
+ *  workerCount: number,
+ *  retry: number,
+ *  dataSet: map[string]string,
+ *  dataDirs: !Array<!backendApi.DataDirVolume>
+ * }}
+ */
+backendApi.JobCommonArgs;
+
+/**
+ * @typedef{{
+ *  hostPath: string,
+ *  containerPath: string,
+ *  name: string
+ *  }}
+ */
+backendApi.DataDirVolume;
+
+/**
+ * @typedef{{
+ *  cpu: string,
+ *  memory: string,
+ *  gpus: number,
+ *  nodeLabels: !Array<string>,
+ *  jobCommonArgs: !backendApi.JobCommonArgs,
+ *  tensorboardArgs: !backendApi.TensoboardArgs,
+ *  syncCodeArgs: !backendApi.SyncCodeArgs
+ *
+ * }}
+ */
+backendApi.MPIJobArgs;
+
+/**
+ * @typedef{{
+ *  name: string,
+ *  value: string
+ * }}
+ */
+backendApi.NestObject;
+
+/**
+ * @typedef{{
+ *  field1: string,
+ *  field2: number
+ * }}
+ */
+backendApi.NestStruct;
+
+/**
+ * @typedef{{
+ *  name: string,
+ *  nums: number,
+ *  list: !Array<!backendApi.NestStruct>,
+ *  map: !Array<!Object<string,!backendApi.NestObject>>,
+ *  bool: boolean
+ * }}
+ */
+backendApi.ListSpec;
+

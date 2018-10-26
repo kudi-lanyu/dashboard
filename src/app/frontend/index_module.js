@@ -60,58 +60,79 @@ import storageClassModule from './storageclass/module';
 import {TitleController} from './title_controller';
 import workloadsModule from './workloads/module';
 
+// atlas task
+import atlastasksModule from './atlastasks/module';
+import atlasmpijobModule from './atlasmpijob/module';
+
+// atlas display
+import atlasdisplayModule from './atlasdisplay/module';
+import atlasdisplaynodeModule from './atlasdisplaynode/module';
+import atlasdisplaydataModule from './atlasdisplaydata/module';
+import atlasdisplayjobModule from './atlasdisplayjob/module';
+import atlasfakelistModule from './atlasfakelist/module';
+
 export default angular
-    .module(
-        'kubernetesDashboard',
-        [
-          'ngAnimate',
-          'ngAria',
-          'ngMaterial',
-          'ngMessages',
-          'ngResource',
-          'ngSanitize',
-          'ui.router',
-          aboutModule.name,
-          settingsModule.name,
-          settingsServiceModule.name,
-          authModule.name,
-          overviewModule.name,
-          chromeModule.name,
-          daemonSetModule.name,
-          deployModule.name,
-          errorModule.name,
-          jobModule.name,
-          cronJobModule.name,
-          loginModule.name,
-          logsModule.name,
-          shellModule.name,
-          replicationControllerModule.name,
-          replicaSetModule.name,
-          namespaceModule.name,
-          nodeModule.name,
-          deploymentModule.name,
-          horizontalPodAutoscalerModule.name,
-          workloadsModule.name,
-          searchModule.name,
-          clusterModule.name,
-          serviceModule.name,
-          podModule.name,
-          persistentVolumeModule.name,
-          statefulSetModule.name,
-          persistentVolumeClaimModule.name,
-          resourceQuotaModule.name,
-          resourceLimitModule.name,
-          configMapModule.name,
-          secretModule.name,
-          ingressModule.name,
-          discoveryModule.name,
-          configModule.name,
-          csrfTokenModule.name,
-          storageClassModule.name,
-          roleModule.name,
-          scalingModule.name,
-        ])
-    .config(indexConfig)
-    .config(routeConfig)
-    .controller('kdTitle', TitleController)
-    .controller('kdMain', Controller);
+  .module(
+    'kubernetesDashboard',
+    [
+      'ngAnimate',
+      'ngAria',
+      'ngMaterial',
+      'ngMessages',
+      'ngResource',
+      'ngSanitize',
+      'ui.router',
+      aboutModule.name,
+      settingsModule.name,
+      settingsServiceModule.name,
+      authModule.name,
+      overviewModule.name,
+      chromeModule.name,
+      daemonSetModule.name,
+      deployModule.name,
+      errorModule.name,
+      jobModule.name,
+      cronJobModule.name,
+      loginModule.name,
+      logsModule.name,
+      shellModule.name,
+      replicationControllerModule.name,
+      replicaSetModule.name,
+      namespaceModule.name,
+      nodeModule.name,
+      deploymentModule.name,
+      horizontalPodAutoscalerModule.name,
+      workloadsModule.name,
+      searchModule.name,
+      clusterModule.name,
+      serviceModule.name,
+      podModule.name,
+      persistentVolumeModule.name,
+      statefulSetModule.name,
+      persistentVolumeClaimModule.name,
+      resourceQuotaModule.name,
+      resourceLimitModule.name,
+      configMapModule.name,
+      secretModule.name,
+      ingressModule.name,
+      discoveryModule.name,
+      configModule.name,
+      csrfTokenModule.name,
+      storageClassModule.name,
+      roleModule.name,
+      scalingModule.name,
+      // atlas tasks
+      atlastasksModule.name,
+      atlasmpijobModule.name,
+
+      // atlas display
+      atlasdisplayModule.name,
+      atlasdisplaydataModule.name,
+      atlasdisplaynodeModule.name,
+      atlasdisplayjobModule.name,
+      atlasfakelistModule.name,
+    ])
+  .config(indexConfig)
+  .config(routeConfig)
+  .controller('kdTitle', TitleController)
+  .controller('kdMain', Controller);

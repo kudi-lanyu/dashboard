@@ -5,6 +5,8 @@ import (
   "k8s.io/apimachinery/pkg/fields"
   "k8s.io/client-go/kubernetes"
   metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+  "log"
+  "encoding/json"
 )
 
 type AtlasNodeInfo struct {
@@ -18,6 +20,11 @@ type AtlasNodeInfo struct {
 
 func GetNodeInfo(client kubernetes.Interface, nodeName string) *AtlasNodeInfo {
   node, err := client.CoreV1().Nodes().Get(nodeName, metaV1.GetOptions{})
+
+  log.Println("getNodeInfo:[][]]]]]]]]]]]]]]]]]]]]][[[")
+  nodeInfo , _ := json.Marshal(node)
+  log.Println(string(nodeInfo))
+
   if err != nil {
     return &AtlasNodeInfo{}
   }
@@ -25,7 +32,9 @@ func GetNodeInfo(client kubernetes.Interface, nodeName string) *AtlasNodeInfo {
   ipaddress := GetNodeInternalAddress(node)
 
   allocated, total := CalculateNodeGPU(client, *node)
+  log.Println("allocated: ", allocated, "total:", total)
   usage := getGpuUsage(allocated, total)
+  log.Printf("GPU Usage: %f", usage)
 
   return &AtlasNodeInfo{NodeTotalGpuCount: total,
                         NodeAllocatedGpuCount: allocated,
@@ -46,6 +55,7 @@ func GetNodeInternalAddress(node *v1.Node) string {
       }
     }
   }
+  log.Println("ipaddress: ", address)
   return address
 }
 
@@ -66,6 +76,7 @@ func getPodsFromNode(client kubernetes.Interface, node v1.Node) ([]v1.Pod, error
   }
   return podList.Items, err
 }
+
 func getPodsByNodeName(client kubernetes.Interface, nodeName string) ([]v1.Pod, error) {
   fieldSelector, err := fields.ParseSelector("spec.nodeName=" + nodeName +
     ",status.phase!=" + string(v1.PodSucceeded) +

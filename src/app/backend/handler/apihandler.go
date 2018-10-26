@@ -145,10 +145,7 @@ func CreateHTTPAPIHandler(iManager integration.IntegrationManager, cManager clie
   apiV1Ws.Route(
     apiV1Ws.GET("/atlas/node").To(apiHandler.handleAtlasDisplayNodeList).Writes(atlasnode.AtlasNodeInfoList{}))
   apiV1Ws.Route(
-      apiV1Ws.GET("/atlas/node/{nodename}").To(apiHandler.handleGetAtlasNodeInfo).Writes(atlasnode.AtlasNodeInfo{}))
-  //
-  //apiV1Ws.Route(
-  //  apiV1Ws.GET("/atlas/node/gpu/{nodename}").To(apiHandler.handleGetNodeGpuUsage).Writes(atlasnode.AtlasNodeGpuUsage{}))
+      apiV1Ws.GET("/atlas/node/{name}").To(apiHandler.handleGetAtlasNodeInfo).Writes(atlasnode.AtlasNodeInfo{}))
 
   apiV1Ws.Route(
     apiV1Ws.GET("/atlas/data").To(apiHandler.handleAtlasDisplayDataList).Writes(atlasdata.AtlasDataList{}))
@@ -1016,7 +1013,8 @@ func (apiHandler *APIHandler) handleGetAtlasNodeInfo(request *restful.Request, r
     kdErrors.HandleInternalError(response, err)
     return
   }
-  name := request.PathParameter("nodename")
+  name := request.PathParameter("name")
+  log.Println("stateParams: ",name)
   dataSelect := parseDataSelectPathParameter(request)
   dataSelect.MetricQuery = dataselect.StandardMetrics
 

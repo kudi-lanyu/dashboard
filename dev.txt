@@ -1,0 +1,57 @@
+app/backend:
+
+1.dashboard.go => add or delete prefix/path/api => setup serve
+2.apiHandler 添加api及apihandler处理逻辑(将atlasctl中的list命令的返回结果处理)
+3.根据需要，是否需要添加backend/resource/subResource 用来存储同apiServer通信接受返回结果，
+  生成相应的结构体实例化对象，以供前端通过backendapi调用获取相关结果
+
+
+app/externs:
+
+1.backend extend api
+描述相关结构体的结构，便于前后端数据的一致性表示和传递
+
+
+app/frontend:
+
+1.app/frontend/index_controller.js
+  在angular.module中添加注入依赖module(atlasctl)
+
+  到这要添加的模块在dashboard的代码结构中已经完全清晰了
+2.在第一步完成后，在frontend中添加要添加的模块子文件夹
+  /app/frontend/atlasctl
+3.按照angular.js 1.6版本的代码组织方法，依次添加module.js routeConfig.js config state template_html等
+
+4.做完这3步之后，将3完成的页面添加到dashboard的主页面中，需要进行以下操作
+  i:
+    src/app/frontend/chrome/nav/nav.html
+    添加标签到主页面
+    src/app/frontend/chrome/nav/nav_component.js
+    添加状态信息到nav_component
+  ii:
+    添加完成，处理atlasctl目录下具体的逻辑调用和前端页面组织（复用/frontend/common/components下的基本页面元素）
+
+5.编译测试，完成相关工作
+
+
+
+
+
+
+
+
+
+
+
+
+struct 支持嵌套结构体，但是前后端传输的数据都是json格式，所以要把json的注释加上
+ReadEntity(struct)
+
+验证步骤：
+1.设计后端结构体
+2.开发后端deploy部分
+3.开发前端页面
+4.开发前端请求逻辑
+
+
+先从小模块进行，逐渐累加

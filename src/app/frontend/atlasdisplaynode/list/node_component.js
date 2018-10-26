@@ -1,35 +1,34 @@
-
-
 export class AtlasNodeCardController {
-  constructor($state, kdAtlasNodeInfoResource){
+  constructor($state, kdAtlasNodeInfoResource, kdDataSelectService) {
     this.node;
     this.state_ = $state;
     this.kdAtlasNodeInfoResource_ = kdAtlasNodeInfoResource;
+    this.kdDataSelectService_ = kdDataSelectService;
 
-    this.allocatedGpu;
-    this.totalGpu;
-    this.ipAddress;
-    this.role;
-    this.usage;
+    this.nodeInfo = {};
+
+    this.addr = '';
   }
 
   /** @export */
   $onInit() {
     console.log("atlas node componet! ");
+    // console.log(this.node.objectMeta.name);
 
-    let nodeInfo = this.kdAtlasNodeInfoResource_.get(this.node.objectMeta.name).$promise;
-    console.log(nodeInfo);
-
-    this.ipAddress = nodeInfo.ipAddress;
-    this.role = nodeInfo.noderole;
-    this.allocatedGpu = nodeInfo.nodeAllocatedGpuCount;
-    this.totalGpu = nodeInfo.nodeTotalGpuCount;
-    this.usage = nodeInfo.usage;
-
-    console.log(this.ipAddress);
+    let query = this.kdDataSelectService_.getDefaultResourceQuery('', this.node.objectMeta.name);
+    this.kdAtlasNodeInfoResource_.get(query,
+      (response) => {
+        this.nodeInfo = response;
+        console.log(this.nodeInfo);
+      },
+      (err) => {
+        console.log("resource get err: ", err);
+      });
+    
     console.log("may not content will be display.");
 
   }
+
 
   /**
    * Returns true if node is in ready state, false otherwise.

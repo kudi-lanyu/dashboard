@@ -31,5 +31,5 @@ export function atlasNodeListResource($resource) {
 
 export function atlasNodeInfoResource($resource) {
   console.log("inject in atlasdisplaynode module.");
-  return $resource('/api/v1/atlas/node/{nodename}');
+    return $resource('/api/v1/atlas/node/:name');
 }
