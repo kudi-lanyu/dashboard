@@ -17,8 +17,8 @@
 package v1alpha1
 
 import (
-	v1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/apis/kubeflow/v1alpha1"
-	"github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned/scheme"
+	v1alpha1 "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/apis/kubeflow/v1alpha1"
+	"github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/client/clientset/versioned/scheme"
 	serializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	rest "k8s.io/client-go/rest"
 )

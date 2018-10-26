@@ -19,7 +19,7 @@
 package v1alpha1
 
 import (
-	v1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/apis/kubeflow/v1alpha1"
+	v1alpha1 "github.com/kubernetes/dashboard/src/app/backend/resource/atlas/pkg/mpi-operator/apis/kubeflow/v1alpha1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/tools/cache"

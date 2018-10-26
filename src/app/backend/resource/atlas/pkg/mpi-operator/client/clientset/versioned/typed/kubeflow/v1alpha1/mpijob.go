@@ -17,8 +17,8 @@
 package v1alpha1
 
 import (
-	v1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/apis/kubeflow/v1alpha1"
-	scheme "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned/scheme"
+	v1alpha1 "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/apis/kubeflow/v1alpha1"
+	scheme "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/client/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"

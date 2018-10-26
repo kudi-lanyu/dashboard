@@ -21,7 +21,7 @@ package internalinterfaces
 import (
 	time "time"
 
-	versioned "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned"
+	versioned "github.com/kubernetes/dashboard/src/app/backend/resource/atlas/pkg/mpi-operator/client/clientset/versioned"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	cache "k8s.io/client-go/tools/cache"
 )

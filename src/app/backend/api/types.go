@@ -129,6 +129,7 @@ const (
 	ResourceKindRbacRoleBinding         = "rolebinding"
 	ResourceKindRbacClusterRoleBinding  = "clusterrolebinding"
 	ResourceKindEndpoint                = "endpoint"
+  ResourceKindAtlasctl                = "atlasctl"
 )
 
 // ClientType represents type of client that is used to perform generic operations on resources.
@@ -179,7 +180,8 @@ var KindToAPIMapping = map[string]struct {
 	ResourceKindService:                 {"services", ClientTypeDefault, true},
 	ResourceKindStatefulSet:             {"statefulsets", ClientTypeAppsClient, true},
 	ResourceKindStorageClass:            {"storageclasses", ClientTypeStorageClient, false},
-	ResourceKindEndpoint:                {"endpoints", ClientTypeDefault, true},
+  ResourceKindEndpoint:                {"endpoints", ClientTypeDefault, true},
+  ResourceKindAtlasctl:                {"atlasctls",ClientTypeDefault,true},
 }
 
 // IsSelectorMatching returns true when an object with the given selector targets the same

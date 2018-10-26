@@ -19,8 +19,8 @@
 package kubeflow
 
 import (
-	internalinterfaces "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/informers/externalversions/kubeflow/v1alpha1"
+	internalinterfaces "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/client/informers/externalversions/internalinterfaces"
+	v1alpha1 "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/client/informers/externalversions/kubeflow/v1alpha1"
 )
 
 // Interface provides access to each of this group's versions.

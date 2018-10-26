@@ -17,7 +17,7 @@
 package scheme
 
 import (
-	kubeflowv1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/apis/kubeflow/v1alpha1"
+	kubeflowv1alpha1 "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/apis/kubeflow/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

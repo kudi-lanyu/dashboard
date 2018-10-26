@@ -75,6 +75,7 @@ import (
   atlasdata "github.com/kubernetes/dashboard/src/app/backend/resource/atlas/atlasdisplaydata"
   atlasnode "github.com/kubernetes/dashboard/src/app/backend/resource/atlas/atlasdisplaynode"
   //atlasjob "github.com/kubernetes/dashboard/src/app/backend/resource/atlas/atlasdisplayjob"
+  atlasdisplayjob "github.com/kubernetes/dashboard/src/app/backend/resource/atlas/atlasdisplayjob"
 )
 
 const (
@@ -140,7 +141,7 @@ func CreateHTTPAPIHandler(iManager integration.IntegrationManager, cManager clie
   apiV1Ws.Route(
     apiV1Ws.GET("/atlas/fake").To(apiHandler.handleAtlasDisplayFakeList).Writes(atlasinteractive.ExampleList{}))
   apiV1Ws.Route(
-    apiV1Ws.GET("/atlas/job").To(apiHandler.handleAtlasDisplayJobList).Writes(atlasinteractive.ExampleList{}))
+    apiV1Ws.GET("/atlas/job").To(apiHandler.handleAtlasDisplayJobList).Writes(atlasdisplayjob.AtlasctlList{}))
 
   apiV1Ws.Route(
     apiV1Ws.GET("/atlas/node").To(apiHandler.handleAtlasDisplayNodeList).Writes(atlasnode.AtlasNodeInfoList{}))
@@ -1235,19 +1236,55 @@ func (apiHandler *APIHandler) handleAtlasDisplayNodeList(request *restful.Reques
   response.WriteHeaderAndEntity(http.StatusOK, atlasnodelist)
 }
 func (apiHandler *APIHandler) handleAtlasDisplayJobList(request *restful.Request, response *restful.Response) {
+  //k8sClient, err := apiHandler.cManager.Client(request)
+  //if err != nil {
+  //  kdErrors.HandleInternalError(response, err)
+  //  return
+  //}
+  //
+  //result := atlasinteractive.GetExampleSpec(k8sClient)
+  //
+  //res := atlasinteractive.GetExampleList(*result)
+  //log.Println("atlas job list debuginfo:===============>\n" + debugInfo(res))
+  //
+  //response.WriteHeaderAndEntity(http.StatusOK, res)
+
+  log.Println("Print MPJ Joc  client test Listingggggggggggggggggg")
+  MPIJobClient, err := apiHandler.cManager.MpijobClient(request)
   k8sClient, err := apiHandler.cManager.Client(request)
   if err != nil {
     kdErrors.HandleInternalError(response, err)
     return
   }
-
-  result := atlasinteractive.GetExampleSpec(k8sClient)
-
-  res := atlasinteractive.GetExampleList(*result)
-  log.Println("atlas job list debuginfo:===============>\n" + debugInfo(res))
-
-  response.WriteHeaderAndEntity(http.StatusOK, res)
+  dataSelect := parseDataSelectPathParameter(request)
+  dataSelect.MetricQuery = dataselect.NoMetrics
+  result, err := atlasdisplayjob.GetAtlasctlList(MPIJobClient, k8sClient, dataSelect)
+  if err != nil {
+    kdErrors.HandleInternalError(response, err)
+    return
+  }
+  log.Println("mpijob : ", debugInfo(result))
+  response.WriteHeaderAndEntity(http.StatusOK, result)
 }
+
+//func (apiHandler *APIHandler) handleListAtlasctl(request *restful.Request, response *restful.Response) {
+//  log.Printf("Print MPJ Joc  client test Listingggggggggggggggggg")
+//  MPIJobClient, err := apiHandler.cManager.MpijobClient(request)
+//  k8sClient, err := apiHandler.cManager.Client(request)
+//  if err != nil {
+//    kdErrors.HandleInternalError(response, err)
+//    return
+//  }
+//  dataSelect := parseDataSelectPathParameter(request)
+//  dataSelect.MetricQuery = dataselect.NoMetrics
+//  result, err := atlasctl.GetAtlasctlList(MPIJobClient, k8sClient, dataSelect)
+//  if err != nil {
+//    kdErrors.HandleInternalError(response, err)
+//    return
+//  }
+//  log.Printf("Print List atlasctl ###############: %s")
+//  response.WriteHeaderAndEntity(http.StatusOK, result)
+//}
 
 func debugInfo(obj interface{}) string {
   jsonstr, err := json.Marshal(obj)

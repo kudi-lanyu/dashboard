@@ -28,6 +28,8 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
+  "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned"
+
 )
 
 // Dashboard UI default values for client configs.
@@ -68,6 +70,21 @@ type clientManager struct {
 	// Kubernetes client created without providing auth info. It uses permissions granted to
 	// service account used by dashboard or kubeconfig file if it was passed during dashboard init.
 	insecureClient kubernetes.Interface
+}
+// Client returns kubernetes client that is created based on authentication information extracted
+// from request. If request is nil then authentication will be skipped.
+func (self *clientManager) MpijobClient(req *restful.Request) (versioned.Interface, error) {
+  cfg, err := self.Config(req)
+  if err != nil {
+    return nil, err
+  }
+
+  client, err := versioned.NewForConfig(cfg)
+  if err != nil {
+    return nil, err
+  }
+
+  return client, nil
 }
 
 // Client returns kubernetes client that is created based on authentication information extracted

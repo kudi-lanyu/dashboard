@@ -23,9 +23,9 @@ import (
 	sync "sync"
 	time "time"
 
-	versioned "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned"
-	internalinterfaces "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/informers/externalversions/internalinterfaces"
-	kubeflow "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/informers/externalversions/kubeflow"
+	versioned "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/client/clientset/versioned"
+	internalinterfaces "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/client/informers/externalversions/internalinterfaces"
+	kubeflow "github.com/kubernetes/dashboard/src/resource/atlas/pkg/mpi-operator/client/informers/externalversions/kubeflow"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
