@@ -6,8 +6,6 @@ export class AtlasNodeCardController {
     this.kdDataSelectService_ = kdDataSelectService;
 
     this.nodeInfo = {};
-
-    this.addr = '';
   }
 
   /** @export */
@@ -24,7 +22,7 @@ export class AtlasNodeCardController {
       (err) => {
         console.log("resource get err: ", err);
       });
-    
+
     console.log("may not content will be display.");
 
   }

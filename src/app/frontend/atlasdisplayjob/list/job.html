@@ -22,31 +22,35 @@
   <kd-resource-card-columns>
     <!-- card column info  -->
     <kd-resource-card-header-column>
-      [[Name|Label 'Name' for the job name column.]]
+      {{::$ctrl.job.metadata.name}}
     </kd-resource-card-header-column>
 
     <kd-resource-card-header-column>
-      [[Status|Label 'Status' for the job status column.]]
+      {{::$ctrl.getJobStatus()}}
     </kd-resource-card-header-column>
 
     <kd-resource-card-header-column>
-      [[Trainer|Label 'Trainer' for the job trainer.]]
+      {{::$ctrl.jobInfo.trainer}}
     </kd-resource-card-header-column>
 
     <kd-resource-card-header-column>
-      [[Age|Label 'Age' for the job created time.]]
+      {{::$ctrl.jobInfo.metadata.creationTimestamp | relativeTime}}
+      <md-tooltip md-delay="500"
+                  md-autohide>
+        [[Created at| Tooltip for the age column ]] {{::$ctrl.jobInfo.metadata.creationTimestamp | date}}
+      </md-tooltip>
     </kd-resource-card-header-column>
 
     <kd-resource-card-header-column>
-      [[Node|Label 'Node' for the job node column.]]
+      {{::$ctrl.jobInfo.chiefPod.status.hostIP}}
     </kd-resource-card-header-column>
 
     <kd-resource-card-header-column>
-      [[Gpu(Requests)|Label 'Gpu(Requests)' for the gpu count required of trainer job column.]]
+      {{::$ctrl.jobInfo.requestedGpu}}
     </kd-resource-card-header-column>
 
     <kd-resource-card-header-column>
-      [[Gpu(Allocated)|Label 'Gpu(Allocated)' for the gpu count allocated of trainer job column.]]
+      {{::$ctrl.jobInfo.allocatedGpu}}
     </kd-resource-card-header-column>
 
   </kd-resource-card-columns>

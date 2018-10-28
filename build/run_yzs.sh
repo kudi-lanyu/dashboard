@@ -20,8 +20,8 @@ DOCKER_RUN_OPTS=${DOCKER_RUN_OPTS:-}
 DASHBOARD_IMAGE_NAME="kubernetes-dashboard-build-image"
 DEFAULT_COMMAND=${DEFAULT_COMMAND:-"node_modules/.bin/gulp"}
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-#DOMAIN_OR_IP=host.docker.internal
-DOMAIN_OR_IP=10.10.15.253
+DOMAIN_OR_IP=host.docker.internal
+#DOMAIN_OR_IP=10.10.15.253
 APISERVER_IP=8080
 
 docker build -t ${DASHBOARD_IMAGE_NAME} -f ${DIR}/Dockerfile_yzs_1 ${DIR}/../

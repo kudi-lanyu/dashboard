@@ -23,15 +23,13 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
-  "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned"
 )
 
 // ClientManager is responsible for initializing and creating clients to communicate with
 // kubernetes apiserver on demand.
 type ClientManager interface {
 	Client(req *restful.Request) (kubernetes.Interface, error)
-  MpijobClient(req *restful.Request) (versioned.Interface, error)
-  InsecureClient() kubernetes.Interface
+	InsecureClient() kubernetes.Interface
 	CanI(req *restful.Request, ssar *v1.SelfSubjectAccessReview) bool
 	Config(req *restful.Request) (*rest.Config, error)
 	ClientCmdConfig(req *restful.Request) (clientcmd.ClientConfig, error)

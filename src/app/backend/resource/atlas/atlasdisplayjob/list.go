@@ -15,119 +15,191 @@
 package atlasdisplayjob
 
 import (
+	"github.com/kubernetes/dashboard/src/app/backend/api"
+	//dashboardapi "github.com/kubernetes/dashboard/src/app/backend/client/api"
+	"github.com/kubernetes/dashboard/src/app/backend/resource/atlas/atlasutil"
+	"github.com/unisound-ail/atlasctl/pkg/mpi-operator/apis/kubeflow/v1alpha1"
+	kubeflowV1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned/typed/kubeflow/v1alpha1"
+	"k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"log"
-  "github.com/kubernetes/dashboard/src/app/backend/api"
-  "github.com/kubernetes/dashboard/src/app/backend/errors"
-  "github.com/kubernetes/dashboard/src/app/backend/resource/common"
-  "github.com/kubernetes/dashboard/src/app/backend/resource/dataselect"
-  "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned"
-  v1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/apis/kubeflow/v1alpha1"
-  "k8s.io/client-go/kubernetes"
 )
 
-// ATlasctlList contains a list of MPI Jobs in the cluster.
-type AtlasctlList struct {
+type AtlasMpiJobList struct {
 	ListMeta api.ListMeta `json:"listMeta"`
-
-	// Unordered list of RbacRoles
-	Items []Atlasctl `json:"items"`
-
-	// List of non-critical errors, that occurred during resource retrieval.
+	v1alpha1.MPIJobList
 	Errors []error `json:"errors"`
 }
 
-type MPIJobLauncherStatusType string
-
-// These are valid launcher statuses of an MPIJob.
-const (
-	// LauncherActive means the MPIJob launcher is actively running.
-	LauncherActive MPIJobLauncherStatusType = "Active"
-	// LauncherSucceeded means the MPIJob launcher has succeeded.
-	LauncherSucceeded MPIJobLauncherStatusType = "Succeeded"
-	// LauncherFailed means the MPIJob launcher has failed its execution.
-	LauncherFailed MPIJobLauncherStatusType = "Failed"
-)
-
-type MPIJobStatus struct {
-	// Current status of the launcher job.
-	// +optional
-	LauncherStatus MPIJobLauncherStatusType `json:"launcherStatus,omitempty"`
-
-	// The number of available worker replicas.
-	// +optional
-	WorkerReplicas int32 `json:"workerReplicas,omitempty"`
+type AtlasMpiJob struct {
+	v1alpha1.MPIJob
+	Trainer      string   `json:"trainer"`
+	Pods         []v1.Pod `json:"pods"`     // all the pods including statefulset and job
+	ChiefPod     v1.Pod   `json:"chiefPod"` // the chief pod
+	RequestedGPU int64    `json:"requestedGpu"`
+	AllocatedGPU int64    `json:"allocatedGpu"`
+	TrainerType  string   `json:"trainerType"` // return trainer type: TENSORFLOW
 }
 
-
-// RbacRole provides the simplified, combined presentation layer view of Kubernetes' RBAC Roles and ClusterRoles.
-// ClusterRoles will be referred to as Roles for the namespace "all namespaces".
-type Atlasctl struct {
-	ObjectMeta    api.ObjectMeta                   `json:"objectMeta"`
-  TypeMeta      api.TypeMeta                     `json:"typeMeta"`
-  Spec          AtlasctlSpec                     `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
-  trainerType  string                            `json:"trainerType"`
-  status       MPIJobLauncherStatusType          `json:"status"`
-}
-
-
-
-func (mj *Atlasctl) Trainer() string {
-	return mj.trainerType
-}
-
-// GetRbacRoleList returns a list of all RBAC Roles in the cluster.
-func GetAtlasctlList(mpijobclient versioned.Interface, client kubernetes.Interface, dsQuery *dataselect.DataSelectQuery) (*AtlasctlList, error) {
-	log.Println("Getting list of MPI Job")
-	channels := &common.ResourceChannels{
-    AtlasctlList:        common.GetAtlasctlListChannel(mpijobclient, client, 1),
-
-	}
-  log.Println("Print channels.AtlasctlList 11: ", channels.AtlasctlList)
-	return GetAtlasctlListFromChannels(channels, dsQuery)
-}
-
-// GetAtlasctlListFromChannels returns a list of all MPI Job in the cluster reading required resource list once from the channels.
-func GetAtlasctlListFromChannels(channels *common.ResourceChannels, dsQuery *dataselect.DataSelectQuery) (*AtlasctlList, error) {
-	atlasctls := <-channels.AtlasctlList.List
-	err := <-channels.AtlasctlList.Error
-	nonCriticalErrors, criticalError := errors.HandleError(err)
-	if criticalError != nil {
-		return nil, criticalError
-  }
-
-	result := toAtlasctlLists(atlasctls.Items, nonCriticalErrors, dsQuery)
-	return result, nil
-}
-
-func toAtlasctlLists(atlasctls []v1alpha1.MPIJob, nonCriticalErrors []error,
-	dsQuery *dataselect.DataSelectQuery) *AtlasctlList {
-	result := &AtlasctlList{
-		Items:    make([]Atlasctl, 0),
-		ListMeta: api.ListMeta{TotalItems: len(atlasctls)},
-		Errors:   nonCriticalErrors,
+func NewAtlasMpiJobClient(config *rest.Config, namespace string) (kubeflowV1alpha1.MPIJobInterface, error) {
+	KubeflowV1alpha1Client, err := kubeflowV1alpha1.NewForConfig(config)
+	if err != nil {
+		log.Println("kubeflow client init failed. ", err)
+		return nil, err
 	}
 
-	atlasctlCells, filteredTotal := dataselect.GenericDataSelectWithFilter(toCells(atlasctls), dsQuery)
-	atlasctls = fromCells(atlasctlCells)
-	result.ListMeta = api.ListMeta{TotalItems: filteredTotal}
+	mpijobclient := KubeflowV1alpha1Client.MPIJobs(namespace)
 
-	for _, item := range atlasctls {
-		result.Items = append(result.Items,
-			Atlasctl{
-        ObjectMeta:    api.NewObjectMeta(item.ObjectMeta),
-        TypeMeta:      api.NewTypeMeta(api.ResourceKindAtlasctl),
-        trainerType:       "mpijob",
+	return mpijobclient, err
+}
 
+func GetAtlasMpiJob(mpiClient kubeflowV1alpha1.MPIJobInterface, k8sClient kubernetes.Interface, namespace string, jobname string) (*AtlasMpiJob, error) {
+	// get mpi job info
+	mpiJob, err := mpiClient.Get(jobname, metav1.GetOptions{})
+	if err != nil {
+		log.Println("mpijob is not found.")
+		return nil, err
+	}
+	atlasmpijob := AtlasMpiJob{}
+	atlasmpijob.Kind = mpiJob.Kind
+	atlasmpijob.APIVersion = mpiJob.APIVersion
+	atlasmpijob.ResourceVersion = mpiJob.ResourceVersion
+	atlasmpijob.Namespace = mpiJob.Namespace
+	atlasmpijob.Spec = mpiJob.Spec
 
-      })
-    log.Printf("Print toAtlasctlLists ######888: %d", item.Spec.GPUs)
-    log.Printf("Print toAtlasctlLists ######999: %s", item.Status)
-    log.Printf("Print toAtlasctlLists ######000: %v", item.ObjectMeta)
+	atlasmpijob.Status = mpiJob.Status
 
-  }
-  log.Printf("Print toAtlasctlLists ######666: %+v", atlasctls)
-  log.Printf("Print toAtlasctlLists ######777: %+v", result.Items)
-  log.Printf("Print toAtlasctlLists ######5555: %v", result.ListMeta)
-  log.Printf("Print results ######5566: %v", result)
-	return result
+	atlasmpijob.CreationTimestamp = mpiJob.CreationTimestamp
+	atlasmpijob.Annotations = mpiJob.Annotations
+	atlasmpijob.ObjectMeta = mpiJob.ObjectMeta
+	atlasmpijob.TypeMeta = mpiJob.TypeMeta
+	atlasmpijob.OwnerReferences = mpiJob.OwnerReferences
+	atlasmpijob.DeletionTimestamp = mpiJob.DeletionTimestamp
+	atlasmpijob.Labels = mpiJob.Labels
+
+	atlasmpijob.TrainerType = "mpijob"
+
+	pods, chiefpod, err := getMpiJobPods(k8sClient, mpiJob.Name, namespace)
+	if err != nil {
+		log.Println("Get Mpi job Pods failed.")
+		return nil, err
+	} else {
+		atlasmpijob.Pods = pods
+		atlasmpijob.ChiefPod = chiefpod
+	}
+
+	// gpu
+	if atlasmpijob.RequestedGPU == 0 {
+		for _, pod := range atlasmpijob.Pods {
+			atlasmpijob.RequestedGPU += atlasutil.GpuInPod(pod)
+		}
+	}
+
+	if atlasmpijob.AllocatedGPU == 0 {
+		for _, pod := range atlasmpijob.Pods {
+			atlasmpijob.AllocatedGPU += atlasutil.GpuInActivePod(pod)
+		}
+	}
+	return &atlasmpijob, err
+}
+
+func GetAtlasMpiJobList(mpiClient kubeflowV1alpha1.MPIJobInterface, namespace string) *AtlasMpiJobList {
+	mpiJobList, err := mpiClient.List(metav1.ListOptions{})
+
+	totalItems := 0
+	if err == nil {
+		totalItems = len(mpiJobList.Items)
+	}
+
+	atlasMpiJobList := &AtlasMpiJobList{
+		ListMeta: api.ListMeta{TotalItems: totalItems},
+	}
+
+	atlasMpiJobList.Items = mpiJobList.Items
+	atlasMpiJobList.Kind = mpiJobList.Kind
+	atlasMpiJobList.APIVersion = mpiJobList.APIVersion
+	atlasMpiJobList.ResourceVersion = mpiJobList.ResourceVersion
+	atlasMpiJobList.Continue = mpiJobList.Continue
+
+	if err != nil {
+		log.Println("mpiJobList get failed.")
+		atlasMpiJobList.Errors = append(atlasMpiJobList.Errors, err)
+	}
+	return atlasMpiJobList
+}
+
+func getMpiJobPods(client kubernetes.Interface, jobname, namespace string) (pods []v1.Pod, chiefPod v1.Pod, err error) {
+	podList, err := client.CoreV1().Pods(namespace).List(metav1.ListOptions{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ListOptions",
+			APIVersion: "v1",
+		},
+	})
+
+	if err != nil {
+		return pods, chiefPod, err
+	}
+
+	for _, item := range podList.Items {
+		if !isMPIPod(jobname, namespace, item) {
+			continue
+		}
+		if isChiefPod(item) {
+			chiefPod = item
+		}
+		pods = append(pods, item)
+	}
+	return pods, chiefPod, err
+}
+
+func isChiefPod(item v1.Pod) bool {
+
+	if val, ok := item.Labels["mpi_role_type"]; ok && (val == "launcher") {
+		log.Println("the mpijob %s with labels %s", item.Name, val)
+	} else {
+		return false
+	}
+
+	return true
+}
+
+func isMPIPod(name, ns string, item v1.Pod) bool {
+	if val, ok := item.Labels["release"]; ok && (val == name) {
+		log.Println("the mpijob %s with labels %s", item.Name, val)
+	} else {
+		return false
+	}
+
+	if val, ok := item.Labels["app"]; ok && (val == "mpijob") {
+		log.Println("the mpijob %s with labels %s is found.", item.Name, val)
+	} else {
+		return false
+	}
+
+	if val, ok := item.Labels["group_name"]; ok && (val == "kubeflow.org") {
+		log.Println("the mpijob %s with labels %s is found.", item.Name, val)
+	} else {
+		return false
+	}
+
+	if item.Namespace != ns {
+		return false
+	}
+	return true
+}
+
+func isMPIJobSucceeded(status v1alpha1.MPIJobStatus) bool {
+	// status.MPIJobLauncherStatusType
+
+	return status.LauncherStatus == v1alpha1.LauncherSucceeded
+}
+
+func isMPIJobFailed(status v1alpha1.MPIJobStatus) bool {
+	return status.LauncherStatus == v1alpha1.LauncherFailed
+}
+
+func isMPIJobPending(status v1alpha1.MPIJobStatus) bool {
+	return false
 }

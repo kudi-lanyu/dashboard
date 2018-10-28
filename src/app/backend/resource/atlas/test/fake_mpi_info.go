@@ -1,32 +1,32 @@
 package test
 
 import (
-	"k8s.io/helm/pkg/chartutil"
+	"github.com/ghodss/yaml"
 	"github.com/kubernetes/dashboard/src/app/backend/resource/atlas/atlasjob"
 	"github.com/kubernetes/dashboard/src/app/backend/resource/atlas/atlasjob/mpijob"
-	"github.com/ghodss/yaml"
+	"k8s.io/helm/pkg/chartutil"
 	"log"
 )
 
 // handleFrontValues handle receive arguments from post by frontend code
-func HandleFrontValues() (chartutil.Values,error) {
+func HandleFrontValues() (chartutil.Values, error) {
 	// transfer data from frontend
 
 	// construct necessary info
 	mpiJobArgs := ConstructMpiArgs()
 
 	// transfer the map to chartutil.Values
-	data,err := yaml.Marshal(mpiJobArgs)
+	data, err := yaml.Marshal(mpiJobArgs)
 	if err != nil {
 		log.Println(err)
-		return nil,nil
+		return nil, nil
 	}
-	helmValues,err := chartutil.ReadValues(data)
+	helmValues, err := chartutil.ReadValues(data)
 	if err != nil {
 		log.Println(err)
-		return nil,nil
+		return nil, nil
 	}
-	return helmValues,nil
+	return helmValues, nil
 }
 
 func constructMpiTensorboard() atlasjob.TensorboardArgs {
@@ -41,25 +41,22 @@ func constructMpiTensorboard() atlasjob.TensorboardArgs {
 	return tensorBoardArgs
 }
 
-func constructSyncCodeArgs()  atlasjob.SyncCodeArgs{
+func constructSyncCodeArgs() atlasjob.SyncCodeArgs {
 	syncArgs := atlasjob.SyncCodeArgs{}
 
 	syncArgs.SyncMode = "git"
 	syncArgs.SyncSource = ""
 	syncArgs.SyncImage = ""
 
-
 	return syncArgs
 }
 
 func constructCommonFlags() atlasjob.JobCommonArgs {
 
-
 	jobCommonArgs := atlasjob.JobCommonArgs{}
 
 	//jobCommonArgs
 	//jobCommonArgs.Mode = "MPIJob"
-
 
 	jobCommonArgs.Image = ""
 	//jobCommonArgs.GPUCount = 0
@@ -88,7 +85,7 @@ func constructCommonFlags() atlasjob.JobCommonArgs {
 	return jobCommonArgs
 }
 
-func ConstructMpiArgs() mpijob.MPIJobArgs{
+func ConstructMpiArgs() mpijob.MPIJobArgs {
 	mpiArgs := mpijob.MPIJobArgs{}
 
 	mpiArgs.Cpu = 5
@@ -107,7 +104,6 @@ func ConstructMpiArgs() mpijob.MPIJobArgs{
 	//
 	//// CommonArgs
 	//mpiArgs.JobCommonArgs = constructCommonFlags()
-
 
 	return mpiArgs
 }

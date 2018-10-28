@@ -2,7 +2,7 @@
 {{- $cleanPodPolicy := .Values.cleanPodPolicy -}}
 {{- $dataDirs := .Values.dataDirs -}}
 apiVersion: kubeflow.org/v1alpha1
-Kind: MPIJob
+kind: MPIJob
 metadata:
   name: {{ template "mpijob.fullname" . }}
   labels:

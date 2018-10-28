@@ -16,11 +16,10 @@
   <kd-zero-state ng-if="!$ctrl.atlasJobList.listMeta.totalItems">
     <kd-zero-state-text ng-transclude="zerostate">
       [[It is possible that all message have expired.|User help on the events page when no events are to be displayed.]]
-      {{::$ctrl.jobList.listMeta.totalItems}}
     </kd-zero-state-text>
   </kd-zero-state>
 
-  <!-- resource header columns .todo: add ng-show if logic-->
+  <!-- resource header columns .-->
   <kd-resource-card-header-columns ng-show="$ctrl.atlasJobList.listMeta.totalItems">
     <!-- define by yourself according to your real requirements -->
     <kd-resource-card-header-column>
@@ -55,10 +54,9 @@
   </kd-resource-card-header-columns>
 
   <!-- resource card info . paginate pagination-id total-items exampleInfo-->
-  <kd-atlas-job-card dir-paginate="job in $ctrl.atlasJobList.jobs | itemsPerPage: default"
+  <kd-atlas-job-card dir-paginate="job in $ctrl.atlasJobList.items | itemsPerPage: default"
                       job="job"
                       total-items="::$ctrl.atlasJobList.listMeta.totalItems">
-
   </kd-atlas-job-card>
 
 

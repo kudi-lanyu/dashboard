@@ -1,19 +1,19 @@
 package interactive
 
 import (
-  client "k8s.io/client-go/kubernetes"
-  "log"
-  "encoding/json"
+	"encoding/json"
+	client "k8s.io/client-go/kubernetes"
+	"log"
 )
 
 func DeployApp(spec *DeploySpec, client client.Interface) error {
-  data, err := json.Marshal(spec)
-  if err != nil {
-    log.Println("json marshal failed.", err)
-  }
-  // print spec info
-  log.Println(string(data))
-  return err
+	data, err := json.Marshal(spec)
+	if err != nil {
+		log.Println("json marshal failed.", err)
+	}
+	// print spec info
+	log.Println(string(data))
+	return err
 }
 
 // DeployApp deploys an app based on the given configuration. The app is deployed using the given

@@ -1,9 +1,37 @@
 
 
 export class AtlasJobCardController {
-  constructor($state){
+  constructor($state, kdAtlasJobResource, kdDataSelectService){
     this.job;
+    this.jobInfo;
     this.state_ = $state;
+    this.kdAtlasJobResource_ = kdAtlasJobResource;
+    this.kdDataSelectService_ = kdDataSelectService;
+  }
+
+  /** @export */
+  $onInit() {
+    console.log("atlas job componet! ");
+    // console.log(this.node.objectMeta.name);
+
+    let query = this.kdDataSelectService_.getDefaultResourceQuery('', this.job.objectMeta.name);
+    this.kdAtlasJobResource_.get(query,
+      (response) => {
+        this.jobInfo = response;
+        console.log(this.jobInfo);
+      },
+      (err) => {
+        console.log("resource get err: ", err);
+      });
+  }
+
+  getJobStatus() {
+    if (this.jobInfo.status.launcherStatus == "Succeeded") {
+      return "SUCCEEDED";
+    }else if (this.jobInfo.status.launcherStatus == "Failed"){
+      return "FAILED";
+    }else
+      return "PENDING";
   }
 
   /**
@@ -12,7 +40,7 @@ export class AtlasJobCardController {
    * @export
    */
   isInReadyState() {
-    return this.job.ready === 'True';
+    return this.jobInfo.status.launcherStatus === "Succeeded";
   }
 
   /**
@@ -21,7 +49,7 @@ export class AtlasJobCardController {
    * @export
    */
   isInNotReadyState() {
-    return this.job.ready === 'False';
+    return this.jobInfo.status.launcherStatus === "Failed";
   }
 
   /**
@@ -30,7 +58,11 @@ export class AtlasJobCardController {
    * @export
    */
   isInUnknownState() {
-    return this.job.ready === 'Unknown';
+    if (!this.isInReadyState() && !this.isInNotReadyState()) {
+      return true;
+    }else {
+      return false;
+    }
   }
 }
 

@@ -22,8 +22,14 @@ export default angular
   .component('kdAtlasJobCard', atlasJobCardComponent)
   .component('kdAtlasJobCardList', atlasJobCardListComponent)
   .factory('kdAtlasJobListResource', atlasJobListResource)
+  .factory('kdAtlasJobResource', atlasJobResource)
 
 export function atlasJobListResource($resource) {
   console.log("atlasJobListResource");
-  return $resource('/api/v1/atlas/job')
+  return $resource('/api/v1/atlas/job');
+}
+
+export function atlasJobResource($resource) {
+  console.log("atlasJobResource");
+  return $resource('/api/v1/atlas/job/:name');
 }

@@ -26,9 +26,6 @@ import (
 	storage "k8s.io/api/storage/v1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client "k8s.io/client-go/kubernetes"
-  "github.com/unisound-ail/atlasctl/pkg/mpi-operator/client/clientset/versioned"
-  v1alpha1 "github.com/unisound-ail/atlasctl/pkg/mpi-operator/apis/kubeflow/v1alpha1"
-  "log"
 )
 
 // ResourceChannels struct holds channels to resource lists. Each list channel is paired with
@@ -120,9 +117,6 @@ type ResourceChannels struct {
 
 	// List and error channels to ClusterRoleBindings
 	ClusterRoleBindingList ClusterRoleBindingListChannel
-
-	// List and error channels to ClusterRoleBindings
-  AtlasctlList AtlasctlListChannel
 }
 
 // ServiceListChannel is a list and error channels to Services.
@@ -917,43 +911,4 @@ func GetStorageClassListChannel(client client.Interface, numReads int) StorageCl
 	}()
 
 	return channel
-}
-
-//**********atlasctl*************************
-
-
-// AtlasctlListChannel is a list and error channels to PersistentVolumes.
-type AtlasctlListChannel struct {
-  List  chan *v1alpha1.MPIJobList
-  PodList  chan  *v1.PodList
-  Error chan error
-}
-
-// GetAtlasctlListChannel returns a pair of channels to a Atlasctl list and errors
-// that both must be read numReads times.
-func GetAtlasctlListChannel(mpijobClient versioned.Interface,client client.Interface, numReads int) AtlasctlListChannel {
-  channel := AtlasctlListChannel{
-    List:  make(chan *v1alpha1.MPIJobList, numReads),
-    PodList:  make(chan *v1.PodList, numReads),
-    Error: make(chan error, numReads),
-  }
-
-  go func() {
-    list, err := mpijobClient.KubeflowV1alpha1().MPIJobs(metaV1.NamespaceAll).List(metaV1.ListOptions{})
-    podList, err := client.CoreV1().Pods(metaV1.NamespaceAll).List(metaV1.ListOptions{
-      TypeMeta: metaV1.TypeMeta{
-        Kind:       "ListOptions",
-        APIVersion: "v1",
-      },
-    })
-    for i := 0; i < numReads; i++ {
-      channel.List <- list
-      channel.PodList <- podList
-      channel.Error <- err
-    }
-    log.Printf("Print GetAtlasctlListChannel 111###: %+v", list)
-  }()
-
-  log.Printf("Print GetAtlasctlListChannel 222###: %+v", channel.List)
-  return channel
 }

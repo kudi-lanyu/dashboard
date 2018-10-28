@@ -8,6 +8,7 @@ export class AtlasJobListController{
   constructor(jobList, kdAtlasJobListResource){
     this.atlasJobList = jobList;
     this.atlasJobListResource = kdAtlasJobListResource;
+    console.log("atlas job list constructor");
   }
 
   // controller function

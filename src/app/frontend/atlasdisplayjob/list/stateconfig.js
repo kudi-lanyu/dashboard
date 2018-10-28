@@ -38,10 +38,9 @@ export const config = {
 };
 
 
-function resolveAtlasJobList(kdAtlasJobListResource, kdJobSelectService) {
+function resolveAtlasJobList(kdAtlasJobListResource, kdDataSelectService) {
   console.log("atlasdisplayjobmodule: resolveAtlasJobList");
-  let query = kdJobSelectService.getDefaultResourceQuery();
-  // console.log(kdAtlasJobListResource.get(query).$promise.ListMeta.totalItems);
+  let query = kdDataSelectService.getDefaultResourceQuery();
   return kdAtlasJobListResource.get(query).$promise;
 }
 

@@ -318,8 +318,10 @@ func DeployAppFromFile(cfg *rest.Config, spec *AppDeploymentFromFileSpec) (bool,
 			}
 			return false, err
 		}
+		log.Println("data: ||||||||||||||||||||", data)
 
 		version := data.GetAPIVersion()
+		log.Println("version:",version)
 		kind := data.GetKind()
 
 		gv, err := schema.ParseGroupVersion(version)
