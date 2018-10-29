@@ -13,8 +13,8 @@ export class AtlasJobCardController {
   $onInit() {
     console.log("atlas job componet! ");
     // console.log(this.node.objectMeta.name);
-
-    let query = this.kdDataSelectService_.getDefaultResourceQuery('', this.job.objectMeta.name);
+    // todo: handle namespace
+    let query = this.kdDataSelectService_.getDefaultResourceQuery(this.job.objectMeta.namespace, this.job.objectMeta.name);
     this.kdAtlasJobResource_.get(query,
       (response) => {
         this.jobInfo = response;

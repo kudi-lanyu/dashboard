@@ -26,10 +26,10 @@ export default angular
 
 export function atlasJobListResource($resource) {
   console.log("atlasJobListResource");
-  return $resource('/api/v1/atlas/job');
+  return $resource('/api/v1/atlas/job/:namespace');
 }
 
 export function atlasJobResource($resource) {
   console.log("atlasJobResource");
-  return $resource('/api/v1/atlas/job/:name');
+  return $resource('/api/v1/atlas/job/:namespace/:name');
 }
